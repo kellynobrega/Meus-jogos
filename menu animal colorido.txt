@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Menu de Colorir</title>
+  <style>
+    body {
+      font-family: "Comic Sans MS", cursive;
+      margin: 0;
+      background: #add8e6; /* azul bebê */
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .back-button {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 1000;
+      background: #87cefa; /* azul claro */
+      border: none;
+      padding: 10px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 20px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      text-decoration: none;
+      color: #333;
+    }
+
+    .back-button:hover {
+      background: #5ab4e3;
+      color: white;
+    }
+
+    h2 {
+      text-align: center;
+      margin: 30px 0 10px;
+      color: #333;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 30px;
+      width: 90%;
+      max-width: 1000px;
+      margin: auto;
+      padding-bottom: 60px;
+    }
+
+    .thumbnail {
+      border-radius: 50%;
+      overflow: hidden;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
+      transition: transform 0.3s ease;
+      border: 4px solid white;
+      background-color: white;
+      width: 160px;
+      height: 160px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: auto;
+    }
+
+    .thumbnail:hover {
+      transform: scale(1.08);
+    }
+
+    .thumbnail img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+      display: block;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: auto;
+      padding: 10px;
+      color: #555;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Botão Voltar -->
+  <a href="https://sites.google.com/d/1vi2c7zhmjgEumm5DtcYGsTzhOx2d887a/p/14cPxqwuskXsyaK88H_p774m4DPWMx9dv/edit" class="back-button">Voltar</a>
+
+  <!-- Título -->
+  <h2>Escolha uma imagem para colorir:</h2>
+
+  <!-- Galeria de imagens redondas -->
+  <div class="grid">
+    <a href="https://sites.google.com/d/1vi2c7zhmjgEumm5DtcYGsTzhOx2d887a/p/1C4Oosodwc_UHIX6ts89C1naWAYwK9KGD/edit">
+      <div class="thumbnail">
+        <img src="https://i.postimg.cc/DwdMNYfr/1.jpg" alt="Animal 1">
+      </div>
+    </a>
+
+    <a href="https://sites.google.com/d/1vi2c7zhmjgEumm5DtcYGsTzhOx2d887a/p/15rHhRnUwsOcdm6Za1DYP9GFSSuN450HI/edit">
+      <div class="thumbnail">
+        <img src="https://i.postimg.cc/rmbn4BgF/2.jpg" alt="Animal 2">
+      </div>
+    </a>
+
+    <a href="https://sites.google.com/d/1vi2c7zhmjgEumm5DtcYGsTzhOx2d887a/p/1H21XIarhp6FWQMeY5fGtgnYYGokqdq4C/edit">
+      <div class="thumbnail">
+        <img src="https://i.postimg.cc/VsrHwNLr/3.jpg" alt="Animal 3">
+      </div>
+    </a>
+
+    <a href="https://sites.google.com/d/1vi2c7zhmjgEumm5DtcYGsTzhOx2d887a/p/1nMepfxa_rNDjE3mOgzhDPqLXdloX7SWl/edit">
+      <div class="thumbnail">
+        <img src="https://i.postimg.cc/T3Gknqjw/4.jpg" alt="Animal 4">
+      </div>
+    </a>
+
+    <a href="https://sites.google.com/d/1vi2c7zhmjgEumm5DtcYGsTzhOx2d887a/p/10K5uHOVW-ee3ZbLn0MgimRdM9kZYWeVl/edit">
+      <div class="thumbnail">
+        <img src="https://i.postimg.cc/JhzP2rdv/5.jpg" alt="Animal 5">
+      </div>
+    </a>
+
+    <a href="https://sites.google.com/d/1vi2c7zhmjgEumm5DtcYGsTzhOx2d887a/p/1CKfgLq6IJ0HjCSnyXGcXSLswACoOFwrd/edit">
+      <div class="thumbnail">
+        <img src="https://i.postimg.cc/26qTCHY2/6.jpg" alt="Animal 6">
+      </div>
+    </a>
+
+   <a href="https://sites.google.com/d/1vi2c7zhmjgEumm5DtcYGsTzhOx2d887a/p/100FdmN7xfwQYFtCq5VqAnZZUPeLsQxud/edit">
+      <div class="thumbnail">
+        <img src="https://i.postimg.cc/J0ZqkGGT/7.jpg" alt="Animal 7">
+      </div>
+    </a>
+
+   <a href="https://sites.google.com/d/1vi2c7zhmjgEumm5DtcYGsTzhOx2d887a/p/1AK2-szKKshHlvL_Wm2NOhS-Sc1B-P5d7/edit">
+      <div class="thumbnail">
+        <img src="https://i.postimg.cc/151MZcj6/8.jpg" alt="Animal 8">
+      </div>
+    </a>
+
+    <!-- Continue adicionando mais conforme necessário -->
+  </div>
+
+  <footer>
+    &copy; 2025 • Jogo de Colorir Infantil
+  </footer>
+
+</body>
+</html>
