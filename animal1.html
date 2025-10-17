@@ -127,7 +127,7 @@
     let currentTool = "bucket";
     let currentColor = "#000000";
 
-    // 🎨 Paleta de cores
+    // 🎨 Paleta de cores geral
     const paletteColors = [
       "#F5E6CC", "#E0D8B0", "#B3C6A3", "#96A9A4", "#C2B9B0", "#D5C7BC", "#E8DCD3", "#F2EFE9", "#F8F5F1", "#FAF7F3",
       "#FDFDFD", "#FFFFFF", "#FFF9C4", "#FFDAB9", "#FFB7C5", "#F8BBD0", "#E1BEE7", "#DCEDC8", "#C8E6C9", "#B2DFDB",
@@ -135,20 +135,45 @@
       "#29B6F6", "#B0BEC5"
     ];
 
-    // Separando cores claras
+    // 💡 Cores claras (tons suaves e neutros)
     const lightColors = [
       "#F5E6CC", "#E0D8B0", "#B3C6A3", "#96A9A4", "#C2B9B0", "#D5C7BC", "#E8DCD3", "#F2EFE9", "#F8F5F1", "#FAF7F3",
       "#FDFDFD", "#FFFFFF"
     ];
 
+    // 🔥 Cores fortes e vivas (ideais para destaque, botões etc.)
+    const strongColors = [
+      "#FF3B30", "#FF9500", "#FFCC00", "#34C759", "#30B0C7", "#007AFF", "#5856D6", "#AF52DE",
+      "#FF2D55", "#4CD964", "#FFD60A", "#FF375F"
+    ];
+
+    // Cores escuras (do geral, mas não claras)
     const darkColors = paletteColors.filter(color => !lightColors.includes(color));
+
+    // Junta cores escuras + claras para o restante da paleta
     const allColors = darkColors.concat(lightColors);
 
     const paletteDiv = document.getElementById("palette");
+
+    // Limpa paleta (caso execute várias vezes)
+    paletteDiv.innerHTML = "";
+
+    // Adiciona primeiro as cores fortes
+    strongColors.forEach(color => {
+      const c = document.createElement("div");
+      c.className = "color";
+      c.style.background = color;
+      c.title = color; // ajuda visual ao passar mouse
+      c.onclick = () => currentColor = color;
+      paletteDiv.appendChild(c);
+    });
+
+    // Depois adiciona as demais cores (escuras + claras)
     allColors.forEach(color => {
       const c = document.createElement("div");
       c.className = "color";
       c.style.background = color;
+      c.title = color;
       c.onclick = () => currentColor = color;
       paletteDiv.appendChild(c);
     });
@@ -161,6 +186,7 @@
 
     // 🪣 Flood fill com som ao pintar
     canvas.addEventListener("click", e => {
+      if (currentTool !== "bucket") return; // se precisar de outras ferramentas, trate aqui
       const rect = canvas.getBoundingClientRect();
       const x = Math.floor(e.clientX - rect.left);
       const y = Math.floor(e.clientY - rect.top);
@@ -242,7 +268,6 @@
       document.body.removeChild(link);
     }
 
-
     function setTool(tool) {
       currentTool = tool;
     }
@@ -250,4 +275,3 @@
 </body>
 
 </html>
-
