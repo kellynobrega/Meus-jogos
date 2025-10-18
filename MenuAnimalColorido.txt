@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Jogo de Colorir</title>
+  <style>
+    * { box-sizing: border-box; }
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: "Comic Sans MS", cursive;
+      overflow: hidden;
+    }
+
+    /* Estilo para fundo azul quando GIF não é exibido */
+    body.fundo-azul {
+      background-color: #87CEFA; /* Azul claro */
+    }
+
+    /* Fundo animado (GIF) */
+    .background {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('https://i.postimg.cc/0yQ5TTgJ/1.gif') no-repeat center center fixed;
+      background-size: cover;
+      z-index: -1;
+    }
+
+    body.fundo-azul .background {
+      display: none; /* Esconde o GIF quando fundo azul está ativo */
+    }
+
+    .tela, .menu, .jogo {
+      display: none;
+    }
+
+    .ativa {
+      display: block;
+    }
+
+    .container {
+      position: relative;
+      text-align: center;
+      height: 100vh;
+      color: black;
+    }
+
+    #startGameBtn {
+      position: absolute;
+      left: 50%;
+      top: 80%;
+      transform: translateX(-50%);
+      padding: 15px 40px;
+      font-size: 1.5em;
+      border: none;
+      border-radius: 30px;
+      background-color: #FFD700;
+      color: #000;
+      cursor: pointer;
+      animation: pulse 1.5s infinite;
+      z-index: 10;
+    }
+
+    #startGameBtn:hover {
+      transform: translateX(-50%) scale(1.1);
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.7); }
+      70% { box-shadow: 0 0 0 15px rgba(255, 215, 0, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0); }
+    }
+
+    #menuOpcoes {
+      position: relative;
+      left: 50%;
+      top: 80%;
+      transform: translateX(-50%);
+      z-index: 10;
+      display: none;
+    }
+
+    #menuOpcoes button {
+      padding: 15px 40px;
+      margin: 10px 5px;
+      font-size: 1.5em;
+      border: none;
+      border-radius: 30px;
+      background-color: #add8e6;
+      color: #333;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      min-width: 150px;
+    }
+
+    #menuOpcoes button:hover {
+      background-color: #cceeff;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 40px;
+      width: 95%;
+      max-width: 1200px;
+      margin: auto;
+      padding: 40px 0;
+    }
+
+    .thumbnail {
+      border-radius: 50%;
+      overflow: hidden;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
+      border: 4px solid white;
+      background-color: white;
+      width: 200px;
+      height: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: auto;
+      transition: transform 0.3s ease;
+    }
+
+    .thumbnail:hover {
+      transform: scale(1.08);
+    }
+
+    .thumbnail img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+
+    iframe {
+      width: 100%;
+      height: 90vh;
+      border: none;
+    }
+
+    /* Botão voltar fixo */
+    #btnVoltar {
+      position: fixed;
+      top: 15px;
+      left: 15px;
+      z-index: 1000;
+      padding: 10px 20px;
+      font-size: 1.3em;
+      border-radius: 30px;
+      border: none;
+      background-color: #FFD700;
+      cursor: pointer;
+      box-shadow: 0 0 5px rgba(0,0,0,0.3);
+      transition: background-color 0.3s ease;
+      display: none;
+    }
+
+    #btnVoltar:hover {
+      background-color: #FFC107;
+    }
+
+    #modal {
+      display: none;
+      position: fixed;
+      z-index: 2000;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0,0,0,0.7);
+      justify-content: center;
+      align-items: center;
+    }
+
+    #modalContent {
+      background-color: white;
+      padding: 20px 30px;
+      border-radius: 10px;
+      max-width: 400px;
+      color: black;
+      font-size: 1.2em;
+      text-align: left;
+      position: relative;
+    }
+
+    #closeModal {
+      position: absolute;
+      top: 10px; right: 10px;
+      background: #ccc;
+      border: none;
+      font-size: 1.5em;
+      border-radius: 50%;
+      width: 30px; height: 30px;
+      cursor: pointer;
+    }
+
+    #muteBtn {
+      position: fixed;
+      top: 15px;
+      right: 15px;
+      z-index: 10;
+      background-color: rgba(255, 255, 255, 0.7);
+      border: none;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    #muteBtn:hover {
+      background-color: rgba(255, 255, 255, 1);
+    }
+  </style>
+</head>
+<body class="fundo-azul">
+
+  <!-- Fundo animado (GIF) -->
+  <div class="background" id="backgroundGif"></div>
+
+  <audio id="audioInicial" src="https://kellynobrega.github.io/Meus-jogos/1.mp3" autoplay loop></audio>
+  <button id="muteBtn" title="Ativar/Desativar Som">🔊</button>
+
+  <div id="telaInicial" class="tela ativa container">
+    <button id="startGameBtn">🎮 Start Game</button>
+  </div>
+
+  <div id="menuOpcoes" class="container">
+    <button id="jogarBtn">▶ Jogar</button>
+    <button id="instrucoesBtn">ℹ Instruções</button>
+  </div>
+
+  <div id="menu" class="menu container">
+    <h2>Escolha uma imagem para colorir:</h2>
+    <div class="grid" id="gameGrid"></div>
+    <!-- Botão voltar removido daqui -->
+  </div>
+
+  <div id="areaJogo" class="jogo container">
+    <h2>Colorindo...</h2>
+    <iframe id="iframeJogo" src=""></iframe>
+    <!-- Botão voltar removido daqui -->
+  </div>
+
+  <!-- Botão voltar fixo -->
+  <button id="btnVoltar">🔙 Voltar</button>
+
+  <div id="modal">
+    <div id="modalContent">
+      <button id="closeModal" title="Fechar">×</button>
+      <h2>Instruções do Jogo</h2>
+      <ol>
+        <li>Clique em Jogar.</li>
+        <li>Escolha uma imagem para colorir.</li>
+        <li>Pinte a imagem como quiser.</li>
+        <li>Use o botão voltar para recomeçar.</li>
+      </ol>
+    </div>
+  </div>
+
+  <script>
+    const jogos = [
+      { nome: "Animal 1", url: "https://kellynobrega.github.io/Meus-jogos/animal1.html", img: "https://i.postimg.cc/DwDyNnFb/1.%IMAGE_EXT%" },
+      { nome: "Animal 2", url: "https://kellynobrega.github.io/Meus-jogos/animal2.html", img: "https://i.postimg.cc/9FgW4C4H/2.%IMAGE_EXT%" },
+      { nome: "Animal 3", url: "https://kellynobrega.github.io/Meus-jogos/animal3.html", img: "https://i.postimg.cc/MTwxkGLP/3.%IMAGE_EXT%" },
+      { nome: "Animal 4", url: "https://kellynobrega.github.io/Meus-jogos/animal4.html", img: "https://i.postimg.cc/MZdw4qmb/4.%IMAGE_EXT%" },
+      { nome: "Animal 5", url: "https://kellynobrega.github.io/Meus-jogos/animal5.html", img: "https://i.postimg.cc/VkbcdMQV/5.%IMAGE_EXT%" },
+      { nome: "Animal 6", url: "https://kellynobrega.github.io/Meus-jogos/animal6.html", img: "https://i.postimg.cc/50ghZSLf/6.%IMAGE_EXT%" },
+      { nome: "Animal 7", url: "https://kellynobrega.github.io/Meus-jogos/animal7.html", img: "https://i.postimg.cc/HWZGz3T8/7.%IMAGE_EXT%" },
+      { nome: "Animal 8", url: "https://kellynobrega.github.io/Meus-jogos/animal8.html", img: "https://i.postimg.cc/Pr9gsxp1/8.%IMAGE_EXT%" }
+    ];
+
+    const gameGrid = document.getElementById('gameGrid');
+    jogos.forEach(jogo => {
+      const thumb = document.createElement('div');
+      thumb.className = 'thumbnail';
+      thumb.title = jogo.nome;
+      thumb.innerHTML = `<img src="${jogo.img}" alt="${jogo.nome}">`;
+      thumb.onclick = () => abrirJogo(jogo.url);
+      gameGrid.appendChild(thumb);
+    });
+
+    const telaInicial = document.getElementById('telaInicial');
+    const startGameBtn = document.getElementById('startGameBtn');
+    const menuOpcoes = document.getElementById('menuOpcoes');
+    const jogarBtn = document.getElementById('jogarBtn');
+    const instrucoesBtn = document.getElementById('instrucoesBtn');
+    const modal = document.getElementById('modal');
+    const closeModal = document.getElementById('closeModal');
+    const menu = document.getElementById('menu');
+    const areaJogo = document.getElementById('areaJogo');
+    const iframeJogo = document.getElementById('iframeJogo');
+    const audioInicial = document.getElementById('audioInicial');
+    const muteBtn = document.getElementById('muteBtn');
+    const btnVoltar = document.getElementById('btnVoltar');
+
+    // Funções para exibir/esconder o GIF de fundo
+    function mostrarGifFundo() {
+      document.body.classList.remove('fundo-azul');
+    }
+
+    function esconderGifFundo() {
+      document.body.classList.add('fundo-azul');
+    }
+
+    audioInicial.volume = 1;
+    audioInicial.play().catch(() => {});
+
+    startGameBtn.onclick = () => {
+      telaInicial.classList.remove('ativa');
+      menuOpcoes.style.display = 'block';
+      audioInicial.pause();
+      mostrarGifFundo(); // mostrar GIF
+      btnVoltar.style.display = 'none'; // sem voltar aqui
+    };
+
+    jogarBtn.onclick = () => {
+      menuOpcoes.style.display = 'none';
+      menu.classList.add('ativa');
+      esconderGifFundo(); // fundo azul
+      btnVoltar.style.display = 'block';
+      btnVoltar.onclick = voltarMenuOpcoes;
+    };
+
+    instrucoesBtn.onclick = () => {
+      modal.style.display = 'flex';
+    };
+
+    closeModal.onclick = () => {
+      modal.style.display = 'none';
+    };
+
+    window.onclick = e => {
+      if (e.target === modal) {
+        modal.style.display = 'none';
+      }
+    };
+
+    function abrirJogo(url) {
+      menu.classList.remove('ativa');
+      areaJogo.classList.add('ativa');
+      iframeJogo.src = url;
+      esconderGifFundo(); // fundo azul
+      btnVoltar.style.display = 'block';
+      btnVoltar.onclick = voltarMenuJogos;
+    }
+
+    function voltarMenuOpcoes() {
+      menu.classList.remove('ativa');
+      menuOpcoes.style.display = 'block';
+      mostrarGifFundo(); // mostrar GIF
+      btnVoltar.style.display = 'none';
+    }
+
+    function voltarMenuJogos() {
+      areaJogo.classList.remove('ativa');
+      menu.classList.add('ativa');
+      iframeJogo.src = "";
+      esconderGifFundo(); // fundo azul
+      btnVoltar.style.display = 'block';
+      btnVoltar.onclick = voltarMenuOpcoes;
+    }
+
+    muteBtn.onclick = () => {
+      if (audioInicial.muted) {
+        audioInicial.muted = false;
+        muteBtn.textContent = "🔊";
+      } else {
+        audioInicial.muted = true;
+        muteBtn.textContent = "🔇";
+      }
+    };
+
+    // Inicial - fundo azul para a tela inicial é fundo GIF, então remover classe fundo-azul para iniciar
+    document.body.classList.remove('fundo-azul');
+    btnVoltar.style.display = 'none';
+  </script>
+
+</body>
+</html>
