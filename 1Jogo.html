@@ -14,25 +14,19 @@
       overflow: hidden;
     }
 
-    /* Estilo para fundo azul quando GIF não é exibido */
     body.fundo-azul {
-      background-color: #87CEFA; /* Azul claro */
+      background-color: #87CEFA;
     }
 
-    /* Fundo animado (GIF) */
     .background {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: url('https://i.postimg.cc/0yQ5TTgJ/1.gif') no-repeat center center fixed;
+      background: url('https://i.postimg.cc/BnkNfpJ5/capa-6.jpg') no-repeat center center fixed;
       background-size: cover;
       z-index: -1;
-    }
-
-    body.fundo-azul .background {
-      display: none; /* Esconde o GIF quando fundo azul está ativo */
     }
 
     .tela, .menu, .jogo {
@@ -102,25 +96,21 @@
       background-color: #cceeff;
     }
 
-  .scroll-container {
-  max-height: 400px;    /* altura máxima do container */
-  overflow-y: auto;     /* ativa rolagem vertical */
-  margin: auto;
-  width: 95%;
-  max-width: 1200px;
-  background-color: #82c3ff; /* cor de fundo igual ao azul do seu print */
-  padding: 20px 10px;
-  border-radius: 4px;
-}
+    iframe {
+      width: 100%;
+      height: 90vh;
+      border: none;
+    }
 
-.grid {
-  display: grid;
-  grid-template-columns: repeat(5 , minmax(200px, 1fr));
-  gap: 10px 10px;
-  width: 100%;
-  padding: 0;
-}
-
+    /* Grid de letras */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(120px, 1fr));
+      gap: 80px;
+      width: 100%;
+      max-width: 800px;
+      margin: 80px auto;
+    }
 
     .thumbnail {
       border-radius: 50%;
@@ -129,8 +119,8 @@
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
       border: 4px solid white;
       background-color: white;
-      width: 100px;
-      height: 100px;
+      width: 170px;
+      height: 180px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -149,13 +139,7 @@
       border-radius: 50%;
     }
 
-    iframe {
-      width: 100%;
-      height: 110vh;
-      border: none;
-    }
-
-    /* Botão voltar fixo */
+    /* Botão Voltar fixo */
     #btnVoltar {
       position: fixed;
       top: 15px;
@@ -169,7 +153,7 @@
       cursor: pointer;
       box-shadow: 0 0 5px rgba(0,0,0,0.3);
       transition: background-color 0.3s ease;
-      display: none;
+      display: block;
     }
 
     #btnVoltar:hover {
@@ -208,24 +192,6 @@
       width: 30px; height: 30px;
       cursor: pointer;
     }
-
-    #muteBtn {
-      position: fixed;
-      top: 15px;
-      right: 15px;
-      z-index: 10;
-      background-color: rgba(255, 255, 255, 0.7);
-      border: none;
-      border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      font-size: 20px;
-      cursor: pointer;
-    }
-
-    #muteBtn:hover {
-      background-color: rgba(255, 255, 255, 1);
-    }
   </style>
 </head>
 <body class="fundo-azul">
@@ -233,188 +199,124 @@
   <!-- Fundo animado (GIF) -->
   <div class="background" id="backgroundGif"></div>
 
-  <audio id="audioInicial" src="https://kellynobrega.github.io/Meus-jogos/1.mp3" loop></audio>
-  <button id="muteBtn" title="Ativar/Desativar Som">🔊</button>
+  <!-- Botão Voltar -->
+  <button id="btnVoltar">🔙 Voltar</button>
 
+  <!-- Tela inicial -->
   <div id="telaInicial" class="tela ativa container">
     <button id="startGameBtn">🎮 Start Game</button>
   </div>
 
+  <!-- Menu de opções -->
   <div id="menuOpcoes" class="container">
     <button id="jogarBtn">▶ Jogar</button>
     <button id="instrucoesBtn">ℹ Instruções</button>
   </div>
 
-  <div id="menu" class="menu container">
-    <h2>Escolha uma imagem para colorir:</h2>
-    <div class="grid" id="gameGrid"></div>
-    <!-- Botão voltar removido daqui -->
+  <!-- Menu de letras -->
+  <div id="menuLetras" class="menu container">
+    <h2>Escolha uma letra para colorir:</h2>
+    <div class="grid" id="gridLetras"></div>
   </div>
 
+  <!-- Área do jogo -->
   <div id="areaJogo" class="jogo container">
     <iframe id="iframeJogo" src=""></iframe>
-    <!-- Botão voltar removido daqui -->
   </div>
 
-  <!-- Botão voltar fixo -->
-  <button id="btnVoltar">🔙 Voltar</button>
-
+  <!-- Modal -->
   <div id="modal">
     <div id="modalContent">
       <button id="closeModal" title="Fechar">×</button>
       <h2>Instruções do Jogo</h2>
       <ol>
         <li>Clique em Jogar.</li>
-        <li>Escolha a letra para colorir.</li>
-        <li>Para escolher as cores basta rolar para baixo na paleta.</li>
-        <li>Ao terminar de pintar clicar em salvar e voltar para escolher a próxima letra.</li>
+        <li>Escolha uma imagem para colorir.</li>
+        <li>Para escolher as cores basta rolar a paleta para baixo.</li>
+        <li>Ao terminar de pintar clicar em salvar e voltar para escolher a próxima imagem.</li>
       </ol>
     </div>
   </div>
 
   <script>
-    // Espera o DOM ser completamente carregado
-    document.addEventListener("DOMContentLoaded", () => {
-      const audioInicial = document.getElementById("audioInicial");
-      
-      // Toca o áudio assim que a página for carregada
-      audioInicial.play().catch((err) => {
-        console.error("Erro ao tentar reproduzir o áudio:", err);
-      });
-    });
+    const telaInicial = document.getElementById("telaInicial");
+    const menuOpcoes = document.getElementById("menuOpcoes");
+    const menuLetras = document.getElementById("menuLetras");
+    const areaJogo = document.getElementById("areaJogo");
+    const btnVoltar = document.getElementById("btnVoltar");
+    const backgroundGif = document.getElementById("backgroundGif");
+    const iframeJogo = document.getElementById("iframeJogo");
 
-    const jogos = [
-      { nome: "A", url: "https://kellynobrega.github.io/AlfabetoColorido/a.html", img: "https://i.postimg.cc/PJJsr5TG/a.png" },
-      { nome: "B", url: "https://kellynobrega.github.io/AlfabetoColorido/b.html", img: "https://i.postimg.cc/RhYr3xZ0/b.png" },
-      { nome: "C", url: "https://kellynobrega.github.io/AlfabetoColorido/c.html", img: "https://i.postimg.cc/rmPjLVpC/c.png" },
-      { nome: "D", url: "https://kellynobrega.github.io/AlfabetoColorido/d.html", img: "https://i.postimg.cc/Qd3RzbwK/d.png" },
-      { nome: "E", url: "https://kellynobrega.github.io/AlfabetoColorido/e.html", img: "https://i.postimg.cc/CxsWp8pC/e.png" },
-      { nome: "F", url: "https://kellynobrega.github.io/AlfabetoColorido/f.html", img: "https://i.postimg.cc/wjQSYNdd/f.png" },
-      { nome: "G", url: "https://kellynobrega.github.io/AlfabetoColorido/g.html", img: "https://i.postimg.cc/FKFwrK9d/g.png" },
-      { nome: "H", url: "https://kellynobrega.github.io/AlfabetoColorido/h.html", img: "https://i.postimg.cc/XNBm7m0f/h.png" },
-      { nome: "I", url: "https://kellynobrega.github.io/AlfabetoColorido/i.html", img: "https://i.postimg.cc/J4wgyxrW/i.png" },
-      { nome: "J", url: "https://kellynobrega.github.io/AlfabetoColorido/j.html", img: "https://i.postimg.cc/JzM2xhHD/j.png" },
-      { nome: "K", url: "https://kellynobrega.github.io/AlfabetoColorido/k.html", img: "https://i.postimg.cc/P5yFRkmh/k.png" },
-      { nome: "L", url: "https://kellynobrega.github.io/AlfabetoColorido/l.html", img: "https://i.postimg.cc/ZRB7nB2G/l.png" },
-      { nome: "M", url: "https://kellynobrega.github.io/AlfabetoColorido/m.html", img: "https://i.postimg.cc/W4K8BptL/m.png" },
-      { nome: "N", url: "https://kellynobrega.github.io/AlfabetoColorido/n.html", img: "https://i.postimg.cc/9Xybkhhb/n.png" },
-      { nome: "O", url: "https://kellynobrega.github.io/AlfabetoColorido/o.html", img: "https://i.postimg.cc/FHCVSFyX/o.png" },
-      { nome: "P", url: "https://kellynobrega.github.io/AlfabetoColorido/p.html", img: "https://i.postimg.cc/SKwLZZ1P/p.png" },
-      { nome: "Q", url: "https://kellynobrega.github.io/AlfabetoColorido/q.html", img: "https://i.postimg.cc/Hnmwmrg5/q.png" },
-      { nome: "R", url: "https://kellynobrega.github.io/AlfabetoColorido/r.html", img: "https://i.postimg.cc/bY00T90q/r.png" },
-      { nome: "S", url: "https://kellynobrega.github.io/AlfabetoColorido/s.html", img: "https://i.postimg.cc/mgkQTx05/s.png" },
-      { nome: "T", url: "https://kellynobrega.github.io/AlfabetoColorido/t.html", img: "https://i.postimg.cc/yNScSm6j/t.png" },
-      { nome: "U", url: "https://kellynobrega.github.io/AlfabetoColorido/u.html", img: "https://i.postimg.cc/HxwM6Tyw/u.png" },
-      { nome: "V", url: "https://kellynobrega.github.io/AlfabetoColorido/v.html", img: "https://i.postimg.cc/3rZppJh9/v.png" },
-      { nome: "W", url: "https://kellynobrega.github.io/AlfabetoColorido/w.html", img: "https://i.postimg.cc/BQQFC9Qj/w.png" },
-      { nome: "X", url: "https://kellynobrega.github.io/AlfabetoColorido/x.html", img: "https://i.postimg.cc/Hkr7fwMs/x.png" },
-      { nome: "Y", url: "https://kellynobrega.github.io/AlfabetoColorido/y.html", img: "https://i.postimg.cc/fbXSbM5j/y.png" },
-      { nome: "Z", url: "https://kellynobrega.github.io/AlfabetoColorido/z.html", img: "https://i.postimg.cc/76kGGjWP/z.png" },
+    // Lista de letras
+    const letras = [
+      { nome: "Animal 1", url: "https://kellynobrega.github.io/Animal-Colorido/animal1.html", img: "https://i.postimg.cc/DwDyNnFb/1.png" },
+      { nome: "Animal 2", url: "https://kellynobrega.github.io/Animal-Colorido/animal2.html", img: "https://i.postimg.cc/9FgW4C4H/2.png" },
+      { nome: "Animal 3", url: "https://kellynobrega.github.io/Animal-Colorido/animal3.html", img: "https://i.postimg.cc/MTwxkGLP/3.png" },
+      { nome: "Animal 4", url: "https://kellynobrega.github.io/Animal-Colorido/animal4.html", img: "https://i.postimg.cc/MZdw4qmb/4.png" },
+      { nome: "Animal 5", url: "https://kellynobrega.github.io/Animal-Colorido/animal5.html", img: "https://i.postimg.cc/VkbcdMQV/5.png" },
+      { nome: "Animal 6", url: "https://kellynobrega.github.io/Animal-Colorido/animal6.html", img: "https://i.postimg.cc/50ghZSLf/6.png" },
+      { nome: "Animal 7", url: "https://kellynobrega.github.io/Animal-Colorido/animal7.html", img: "https://i.postimg.cc/HWZGz3T8/7.png" },
+      { nome: "Animal 8", url: "https://kellynobrega.github.io/Animal-Colorido/animal8.html", img: "https://i.postimg.cc/Pr9gsxp1/8.png" }
     ];
 
-    const gameGrid = document.getElementById('gameGrid');
-    jogos.forEach(jogo => {
-      const thumb = document.createElement('div');
-      thumb.className = 'thumbnail';
-      thumb.title = jogo.nome;
-      thumb.innerHTML = `<img src="${jogo.img}" alt="${jogo.nome}">`;
-      thumb.onclick = () => abrirJogo(jogo.url);
-      gameGrid.appendChild(thumb);
+    const gridLetras = document.getElementById("gridLetras");
+    letras.forEach(letra => {
+      const div = document.createElement("div");
+      div.className = "thumbnail";
+      div.innerHTML = `<img src="${letra.img}" alt="${letra.nome}">`;
+      div.onclick = () => abrirLetra(letra.url);
+      gridLetras.appendChild(div);
     });
 
-    const telaInicial = document.getElementById('telaInicial');
-    const startGameBtn = document.getElementById('startGameBtn');
-    const menuOpcoes = document.getElementById('menuOpcoes');
-    const jogarBtn = document.getElementById('jogarBtn');
-    const instrucoesBtn = document.getElementById('instrucoesBtn');
-    const modal = document.getElementById('modal');
-    const closeModal = document.getElementById('closeModal');
-    const menu = document.getElementById('menu');
-    const areaJogo = document.getElementById('areaJogo');
-    const iframeJogo = document.getElementById('iframeJogo');
-    const audioInicial = document.getElementById('audioInicial');
-    const muteBtn = document.getElementById('muteBtn');
-    const btnVoltar = document.getElementById('btnVoltar');
-
-    // Funções para exibir/esconder o GIF de fundo
-    function mostrarGifFundo() {
-      document.body.classList.remove('fundo-azul');
-    }
-
-    function esconderGifFundo() {
-      document.body.classList.add('fundo-azul');
-    }
-
-    audioInicial.volume = 1;
-
-    startGameBtn.onclick = () => {
-      telaInicial.classList.remove('ativa');
-      menuOpcoes.style.display = 'block';
-      // audioInicial.pause(); // REMOVE THIS LINE
-      mostrarGifFundo(); // mostrar GIF
-      btnVoltar.style.display = 'none'; // sem voltar aqui
+    // Start Game
+    document.getElementById("startGameBtn").onclick = () => {
+      telaInicial.classList.remove("ativa");
+      menuOpcoes.style.display = "block";
+      document.body.classList.remove("fundo-azul");
+      backgroundGif.style.display = "block";
     };
 
-    jogarBtn.onclick = () => {
-      menuOpcoes.style.display = 'none';
-      menu.classList.add('ativa');
-      esconderGifFundo(); // fundo azul
-      btnVoltar.style.display = 'block';
-      btnVoltar.onclick = voltarMenuOpcoes;
+    // Jogar
+    document.getElementById("jogarBtn").onclick = () => {
+      menuOpcoes.style.display = "none";
+      menuLetras.classList.add("ativa");
+      backgroundGif.style.display = "none";
     };
 
-    instrucoesBtn.onclick = () => {
-      modal.style.display = 'flex';
+    // Modal
+    document.getElementById("instrucoesBtn").onclick = () => {
+      document.getElementById("modal").style.display = "flex";
+    };
+    document.getElementById("closeModal").onclick = () => {
+      document.getElementById("modal").style.display = "none";
     };
 
-    closeModal.onclick = () => {
-      modal.style.display = 'none';
-    };
-
-    window.onclick = e => {
-      if (e.target === modal) {
-        modal.style.display = 'none';
-      }
-    };
-
-    function abrirJogo(url) {
-      menu.classList.remove('ativa');
-      areaJogo.classList.add('ativa');
+    // Abrir jogo
+    function abrirLetra(url) {
+      menuLetras.classList.remove("ativa");
+      areaJogo.classList.add("ativa");
       iframeJogo.src = url;
-      esconderGifFundo(); // fundo azul
-      btnVoltar.style.display = 'block';
-      btnVoltar.onclick = voltarMenuJogos;
     }
 
-    function voltarMenuOpcoes() {
-      menu.classList.remove('ativa');
-      menuOpcoes.style.display = 'block';
-      mostrarGifFundo(); // mostrar GIF
-      btnVoltar.style.display = 'none';
-    }
-
-    function voltarMenuJogos() {
-      areaJogo.classList.remove('ativa');
-      menu.classList.add('ativa');
-      iframeJogo.src = "";
-      esconderGifFundo(); // fundo azul
-      btnVoltar.style.display = 'block';
-      btnVoltar.onclick = voltarMenuOpcoes;
-    }
-
-    muteBtn.onclick = () => {
-      if (audioInicial.muted) {
-        audioInicial.muted = false;
-        muteBtn.textContent = "🔊";
-      } else {
-        audioInicial.muted = true;
-        muteBtn.textContent = "🔇";
+    // Voltar
+    btnVoltar.onclick = () => {
+      if (areaJogo.classList.contains("ativa")) {
+        areaJogo.classList.remove("ativa");
+        menuLetras.classList.add("ativa");
+        iframeJogo.src = "";
+      } else if (menuLetras.classList.contains("ativa")) {
+        menuLetras.classList.remove("ativa");
+        menuOpcoes.style.display = "block";
+        backgroundGif.style.display = "block";
+      } else if (menuOpcoes.style.display === "block") {
+        menuOpcoes.style.display = "none";
+        telaInicial.classList.add("ativa");
+        document.body.classList.add("fundo-azul");
+        backgroundGif.style.display = "block";
+      } else if (telaInicial.classList.contains("ativa")) {
+        window.location.href = "https://sites.google.com/d/1vi2c7zhmjgEumm5DtcYGsTzhOx2d887a/p/1MnoPO6ILMwaQnyB-746o8InhA7orbYA6/edit";
       }
     };
-
-    // Inicial - fundo azul para a tela inicial é fundo GIF, então remover classe fundo-azul para iniciar
-    document.body.classList.remove('fundo-azul');
-    btnVoltar.style.display = 'none';
   </script>
 
 </body>
